@@ -27,6 +27,30 @@ exports.register = async (req, res) => {
 }
 
 exports.login = async (req, res) => {
-    console.log('Login route hit')
-    res.send('Login route hit')
+  try {
+    const {email, password} = req.body
+    if (!email || !password) {
+        return res.status(StatusCodes.BAD_REQUEST).json({msg : 'Please provide all the information'})
+    }
+
+    const user = await Customer.findOne({email})
+
+    if (!user) {
+        return res.status(StatusCodes.BAD_REQUEST).json({msg : 'Email does not exist'})
+    }
+
+    const suppliedPassword = await user.comparePassword(password)
+
+    if (!suppliedPassword) {
+        return res.status(StatusCodes.BAD_REQUEST).json({msg : 'Password is incorrect'})
+    }
+
+    const token = await user.createJWT()
+
+    return res.status(StatusCodes.OK).json({user, token})
+
+  } catch (error) {
+    console.log(error)
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error : error.message})
+  }
 }

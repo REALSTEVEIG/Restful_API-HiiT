@@ -4,12 +4,13 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 8000
 const connectDB = require('./db/connect')
-const customerRoute = require('./routes/customer')
-
+const customersRoute = require('./routes/customer')
+const productsRoute = require('./routes/products')
 app.use(express.json())
 app.use(express.urlencoded({extended : false}))
 
-app.use('/api/v1', customerRoute)
+app.use('/api/v1', customersRoute)
+app.use('/api/v1', productsRoute)
 
 const start = async () => {
     try {
