@@ -20,18 +20,83 @@ exports.createProduct = async (req, res) => {
 }
 
 exports.getAllProduct = async (req, res) => {
-   try {
-        const getAllProduct = await Product.find({})
+//    try {
+//         const getAllProduct = await Product.find({})
 
-        if (!getAllProduct) {
-            return res.status(StatusCodes.NOT_FOUND).json({msg : `Oops no products found in our database!`})
+//         if (!getAllProduct) {
+//             return res.status(StatusCodes.NOT_FOUND).json({msg : `Oops no products found in our database!`})
+//         }
+
+//         return res.status(StatusCodes.OK).json({total_products : getAllProduct.length, getAllProduct})
+//    } catch (error) {
+//         console.log(error)
+//         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error : error.message})
+//    }
+
+    try {
+       let {name, price, sort, field, numerical} = req.query
+
+       const queryObject = {}
+       
+       if (name) {
+        queryObject.product_name = {$regex : name, $options : 'xi'}
+       }
+
+       if (price) {
+        price = Number(price)
+        queryObject.price = price
+       }
+    
+       if (numerical) {
+
+        const operatorMap = {
+            "<" : "$lt",
+            "<=" : "$lte",
+            "=" : "$eq",
+            ">" : "$gt",
+            ">=" : "$gte"
         }
 
-        return res.status(StatusCodes.OK).json({total_products : getAllProduct.length, getAllProduct})
-   } catch (error) {
+        const regEx = /\b(<|<=|=|>|>=)\b/g
+
+        let filter = numerical.replace(regEx, (match) => `*${operatorMap[match]}*`)
+        console.log(filter)
+
+        const options = ['price']
+
+        filter = filter.split(',').forEach((item) => {
+            const [query, operator, value] = item.split('*')
+            if (options.includes(query)) {
+                queryObject[query] = {[operator] : Number(value)}
+            }
+        })
+
+       }
+       console.log(queryObject)
+       let result = Product.find(queryObject)
+
+       if (sort) {
+        const sortList = sort.split(',').join(' ')
+        result = result.sort(sortList)
+       }
+
+       else {
+        result = result.sort('-product_name')
+       }
+
+       if (field) {
+        const fieldList = field.split(',').join(' ')
+        result = result.select(fieldList)
+       }
+
+       const products = await result
+
+       return res.status(StatusCodes.OK).json({total : products.length, products})
+
+    } catch (error) {
         console.log(error)
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error : error.message})
-   }
+        return res.status(StatusCodes).json({error})
+    }
 }
 
 exports.getSingleProduct = async (req, res) => {
