@@ -1,0 +1,257 @@
+openapi: 3.0.0
+info:
+  title: RESTFUL_API
+  contact: {}
+  version: '1.0'
+servers:
+- url: https://restfulapy.onrender.com/api/v1
+  variables: {}
+paths:
+  /register:
+    post:
+      tags:
+      - Auth
+      summary: REGISTER
+      operationId: REGISTER
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/REGISTERREQUEST'
+              - example:
+                  username: john1
+                  email: john1@gmail.com
+                  password: john
+                  confirmPassword: john
+            example:
+              username: john1
+              email: john1@gmail.com
+              password: john
+              confirmPassword: john
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /login:
+    post:
+      tags:
+      - Auth
+      summary: LOGIN
+      operationId: LOGIN
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LOGINREQUEST'
+              - example:
+                  email: john1@gmail.com
+                  password: john
+            example:
+              email: john1@gmail.com
+              password: john
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /product:
+    post:
+      tags:
+      - PRODUCT
+      summary: CREATE PRODUCT
+      operationId: CREATEPRODUCT
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CREATEPRODUCTREQUEST'
+              - example:
+                  product_name: Iphone
+                  price: $150
+            example:
+              product_name: Iphone
+              price: $150
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    get:
+      tags:
+      - PRODUCT
+      summary: GET ALL PRODUCTS
+      operationId: GETALLPRODUCTS
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /product/{id}:
+    get:
+      tags:
+      - PRODUCT
+      summary: GET SINGLE PRODUCT
+      operationId: GETSINGLEPRODUCT
+      parameters:
+      - name: id
+        in: path
+        description: ''
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    patch:
+      tags:
+      - PRODUCT
+      summary: UPDATE PRODUCT
+      operationId: UPDATEPRODUCT
+      parameters:
+      - name: id
+        in: path
+        description: ''
+        required: true
+        style: simple
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UPDATEPRODUCTREQUEST'
+              - example:
+                  product_name: Nokia
+                  price: $250
+            example:
+              product_name: Nokia
+              price: $250
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    delete:
+      tags:
+      - PRODUCT
+      summary: DELETE PRODUCT
+      operationId: DELETEPRODUCT
+      parameters:
+      - name: id
+        in: path
+        description: ''
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+components:
+  schemas:
+    REGISTERREQUEST:
+      title: REGISTERREQUEST
+      required:
+      - username
+      - email
+      - password
+      - confirmPassword
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        confirmPassword:
+          type: string
+      example:
+        username: john1
+        email: john1@gmail.com
+        password: john
+        confirmPassword: john
+    LOGINREQUEST:
+      title: LOGINREQUEST
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: john1@gmail.com
+        password: john
+    CREATEPRODUCTREQUEST:
+      title: CREATEPRODUCTREQUEST
+      required:
+      - product_name
+      - price
+      type: object
+      properties:
+        product_name:
+          type: string
+        price:
+          type: string
+      example:
+        product_name: Iphone
+        price: $150
+    UPDATEPRODUCTREQUEST:
+      title: UPDATEPRODUCTREQUEST
+      required:
+      - product_name
+      - price
+      type: object
+      properties:
+        product_name:
+          type: string
+        price:
+          type: string
+      example:
+        product_name: Nokia
+        price: $250
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+security: []
+tags:
+- name: Auth
+  description: ''
+- name: PRODUCT
+  description: ''
