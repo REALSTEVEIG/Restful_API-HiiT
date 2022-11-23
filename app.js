@@ -8,32 +8,27 @@ const customersRoute = require('./routes/customer')
 const productsRoute = require('./routes/products')
 
 //API SECURITY MODULES
-const rateLimit = require("express-rate-limit");
-const helmet = require("helmet");
+const helmet = require('helmet')
 const cors = require('cors')
 const xss = require('xss-clean')
+const expressRateLimmitter = require('express-rate-limit')
 const swaggerUI = require('swagger-ui-express')
 const YAML = require('yamljs')
 const swaggerDocument = YAML.load('./swagger.yaml')
 
-app.use(helmet());
-app.use(cors())
-app.use(xss())
-
-const limiter = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000,
-  message: "Too many requests from this IP, please try again in an hour",
-});
-
 app.use(express.json())
 app.use(express.urlencoded({extended : false}))
 
-app.use('/getdocs', (req, res) => {
-    res.send('<h1>VISIT MY BLOG API VIA THE LINK BELOW</h1><a href="/api-docs">Documentation</a>')
+app.set('trust proxy', 1)
+app.use(helmet())
+app.use(cors())
+app.use(xss())
+app.use(expressRateLimmitter({windowMs : 60 * 1000, max : 60}))
+
+app.get('/', (req, res) => {
+    res.send(`<h1>YouTube Search API</h1><a href='/api-docs'>Documentation</a>`)
   })
-  
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument))
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument))
 app.use('/api/v1', customersRoute)
 app.use('/api/v1', productsRoute)
 
