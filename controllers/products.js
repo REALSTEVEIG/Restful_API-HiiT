@@ -33,69 +33,123 @@ exports.getAllProduct = async (req, res) => {
 //         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error : error.message})
 //    }
 
-    try {
-       let {name, price, sort, field, numerical} = req.query
+    // try {
+    //    let {name, price, sort, field, numerical} = req.query
 
-       const queryObject = {}
+    //    const queryObject = {}
        
-       if (name) {
-        queryObject.product_name = {$regex : name, $options : 'xi'}
-       }
+    //    if (name) {
+    //     queryObject.product_name = {$regex : name, $options : 'xi'}
+    //    }
 
-       if (price) {
-        price = Number(price)
-        queryObject.price = price
-       }
+    //    if (price) {
+    //     price = Number(price)
+    //     queryObject.price = price
+    //    }
     
-       if (numerical) {
+    //    if (numerical) {
 
-        const operatorMap = {
-            "<" : "$lt",
-            "<=" : "$lte",
-            "=" : "$eq",
-            ">" : "$gt",
-            ">=" : "$gte"
+    //     const operatorMap = {
+    //         "<" : "$lt",
+    //         "<=" : "$lte",
+    //         "=" : "$eq",
+    //         ">" : "$gt",
+    //         ">=" : "$gte"
+    //     }
+
+    //     const regEx = /\b(<|<=|=|>|>=)\b/g
+
+    //     let filter = numerical.replace(regEx, (match) => `*${operatorMap[match]}*`)
+    //     console.log(filter)
+
+    //     const options = ['price']
+
+    //     filter = filter.split(',').forEach((item) => {
+    //         const [query, operator, value] = item.split('*')
+    //         if (options.includes(query)) {
+    //             queryObject[query] = {[operator] : Number(value)}
+    //         }
+    //     })
+
+    //    }
+    //    console.log(queryObject)
+    //    let result = Product.find(queryObject)
+
+    //    if (sort) {
+    //     const sortList = sort.split(',').join(' ')
+    //     result = result.sort(sortList)
+    //    }
+
+    //    else {
+    //     result = result.sort('-product_name')
+    //    }
+
+    //    if (field) {
+    //     const fieldList = field.split(',').join(' ')
+    //     result = result.select(fieldList)
+    //    }
+
+    //    const products = await result
+
+    //    return res.status(StatusCodes.OK).json({total : products.length, products})
+
+    // } catch (error) {
+    //     console.log(error)
+    //     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error})
+    // }
+
+    try {
+        const {name, field, sort, numerical} = req.query 
+
+        let queryObject = {} 
+    
+        if (name) {
+            queryObject.product_name = {$regex : name, $options : 'xi'}
         }
 
-        const regEx = /\b(<|<=|=|>|>=)\b/g
-
-        let filter = numerical.replace(regEx, (match) => `*${operatorMap[match]}*`)
-        console.log(filter)
-
-        const options = ['price']
-
-        filter = filter.split(',').forEach((item) => {
-            const [query, operator, value] = item.split('*')
-            if (options.includes(query)) {
-                queryObject[query] = {[operator] : Number(value)}
+        if (numerical) {
+            let operatorMap = {
+                "<" : "$lt",
+                "<=" : "$lte",
+                "=" : "$eq",
+                ">" : "$gt",
+                ">=" : "$gte"
             }
-        })
 
-       }
-       console.log(queryObject)
-       let result = Product.find(queryObject)
+            const regEx = /\b(<|<=|=|>|>=)\b/g
 
-       if (sort) {
-        const sortList = sort.split(',').join(' ')
-        result = result.sort(sortList)
-       }
+            let filter = numerical.replace(regEx, (match) => `*${operatorMap[match]}*`)
+            console.log(filter)
 
-       else {
-        result = result.sort('-product_name')
-       }
+            const options = ['price']
 
-       if (field) {
-        const fieldList = field.split(',').join(' ')
-        result = result.select(fieldList)
-       }
+            filter = filter.split(',').forEach((item) => {
+                const [regex, operator, value] = item.split('*')
+                if (options.includes(regex)) {
+                    queryObject[regex] = {[operator] : Number(value)}
+                } 
+            })
+        }
 
-       const products = await result
+        let result = Product.find(queryObject)
 
-       return res.status(StatusCodes.OK).json({total : products.length, products})
+        if (field) {
+            let fieldList = field.split(',').join(' ')
+            result = result.select(fieldList)
+        }
 
+
+        if (sort) {
+            let sortList = sort.split(',').join(' ')
+            result = result.sort(sortList)
+        }
+
+        const products = await result
+    
+        return res.status(200).json({total : products.length, products})
     } catch (error) {
         console.log(error)
-        return res.status(StatusCodes).json({error})
+        return res.status(500).json(error)
     }
 }
 
