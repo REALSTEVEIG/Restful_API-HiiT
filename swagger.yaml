@@ -81,10 +81,10 @@ paths:
               - $ref: '#/components/schemas/CREATEPRODUCTREQUEST'
               - example:
                   product_name: Iphone
-                  price: $150
+                  price: '15000'
             example:
               product_name: Iphone
-              price: $150
+              price: '15000'
         required: true
       responses:
         '200':
@@ -93,12 +93,45 @@ paths:
       deprecated: false
       security:
       - bearer: []
+  /product/:
     get:
       tags:
       - PRODUCT
       summary: GET ALL PRODUCTS
       operationId: GETALLPRODUCTS
-      parameters: []
+      parameters:
+      - name: field
+        in: query
+        description: Select certain fields to display e.g Product_name/Price/ID.
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: product_name
+      - name: name
+        in: query
+        description: Filter the database by name e.g Shoes, Iphones.
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: shoes
+      - name: numerical
+        in: query
+        description: Find certain products with specific price ranges.
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: price>1000
+      - name: sort
+        in: query
+        description: Sort result alphabetically or numerically in ascending or descending order.
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: -product_name
       responses:
         '200':
           description: ''
@@ -147,10 +180,10 @@ paths:
               - $ref: '#/components/schemas/UPDATEPRODUCTREQUEST'
               - example:
                   product_name: Nokia
-                  price: $250
+                  price: '250'
             example:
               product_name: Nokia
-              price: $250
+              price: '250'
         required: true
       responses:
         '200':
@@ -227,7 +260,7 @@ components:
         product_name:
           type: string
         price:
-          type: string
+          type: number
       example:
         product_name: Iphone
         price: $150
@@ -241,10 +274,10 @@ components:
         product_name:
           type: string
         price:
-          type: string
+          type: number
       example:
         product_name: Nokia
-        price: $250
+        price: 250
   securitySchemes:
     bearer:
       type: http

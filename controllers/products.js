@@ -33,71 +33,6 @@ exports.getAllProduct = async (req, res) => {
 //         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error : error.message})
 //    }
 
-    // try {
-    //    let {name, price, sort, field, numerical} = req.query
-
-    //    const queryObject = {}
-       
-    //    if (name) {
-    //     queryObject.product_name = {$regex : name, $options : 'xi'}
-    //    }
-
-    //    if (price) {
-    //     price = Number(price)
-    //     queryObject.price = price
-    //    }
-    
-    //    if (numerical) {
-
-    //     const operatorMap = {
-    //         "<" : "$lt",
-    //         "<=" : "$lte",
-    //         "=" : "$eq",
-    //         ">" : "$gt",
-    //         ">=" : "$gte"
-    //     }
-
-    //     const regEx = /\b(<|<=|=|>|>=)\b/g
-
-    //     let filter = numerical.replace(regEx, (match) => `*${operatorMap[match]}*`)
-    //     console.log(filter)
-
-    //     const options = ['price']
-
-    //     filter = filter.split(',').forEach((item) => {
-    //         const [query, operator, value] = item.split('*')
-    //         if (options.includes(query)) {
-    //             queryObject[query] = {[operator] : Number(value)}
-    //         }
-    //     })
-
-    //    }
-    //    console.log(queryObject)
-    //    let result = Product.find(queryObject)
-
-    //    if (sort) {
-    //     const sortList = sort.split(',').join(' ')
-    //     result = result.sort(sortList)
-    //    }
-
-    //    else {
-    //     result = result.sort('-product_name')
-    //    }
-
-    //    if (field) {
-    //     const fieldList = field.split(',').join(' ')
-    //     result = result.select(fieldList)
-    //    }
-
-    //    const products = await result
-
-    //    return res.status(StatusCodes.OK).json({total : products.length, products})
-
-    // } catch (error) {
-    //     console.log(error)
-    //     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error})
-    // }
-
     try {
         const {name, field, sort, numerical} = req.query 
 
@@ -157,7 +92,7 @@ exports.getSingleProduct = async (req, res) => {
     try {
        const {id : productId}  = req.params
 
-       const product = await Product.findOne({id : productId})
+       const product = await Product.findOne({_id : productId})
 
        if (!product) {
         return res.status(StatusCodes.NOT_FOUND).json({msg : `Product with id ${productId} does not exist`})
