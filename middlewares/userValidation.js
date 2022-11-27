@@ -14,10 +14,11 @@ const userValidate = async (req, res, next) => {
 
 const schema = Joi.object({
     username: Joi.string()
-        .alphanum()
+        .allow('')
+        .allow(null)
         .min(3)
         .max(30)
-        .required(),
+        .regex(new RegExp, /^\w+(?:\s+\w+)*$/),
 
     password: Joi.string()
         .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),

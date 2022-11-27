@@ -14,7 +14,11 @@ const productValitaion = async (req, res, next) => {
 
 const productSchema = Joi.object({
     product_name : Joi.string()
-        .required(),
+        .allow('')
+        .allow(null)
+        .min(3)
+        .max(30)
+        .regex(new RegExp, /^\w+(?:\s+\w+)*$/),
 
     price : Joi.number()
         .min(1000)
