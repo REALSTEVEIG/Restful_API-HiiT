@@ -108,6 +108,14 @@ paths:
         schema:
           type: string
           example: product_name
+      - name: limit
+        in: query
+        description: Decide the limit of your search results. Default is 5 results per page.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
       - name: name
         in: query
         description: Filter the database by name e.g Shoes, Iphones.
@@ -124,6 +132,15 @@ paths:
         schema:
           type: string
           example: price>1000
+      - name: page
+        in: query
+        description: Decide what page you want to access in the query. Default is page 1.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+          example: 1
       - name: sort
         in: query
         description: Sort result alphabetically or numerically in ascending or descending order.
@@ -260,7 +277,7 @@ components:
         product_name:
           type: string
         price:
-          type: number
+          type: string
       example:
         product_name: Iphone
         price: $150
@@ -274,10 +291,10 @@ components:
         product_name:
           type: string
         price:
-          type: number
+          type: string
       example:
         product_name: Nokia
-        price: 250
+        price: $250
   securitySchemes:
     bearer:
       type: http
