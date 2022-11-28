@@ -79,6 +79,16 @@ exports.getAllProduct = async (req, res) => {
             result = result.sort(sortList)
         }
 
+        else {
+            result = result.sort('product_name')
+        }
+
+        const page = req.query.page || 1
+        const limit = req.query.limit || 5
+        const skip = (page - 1) * limit
+
+        result = result.skip(skip).limit(limit)
+
         const products = await result
     
         return res.status(200).json({total : products.length, products})
