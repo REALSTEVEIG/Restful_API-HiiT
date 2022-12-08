@@ -20,19 +20,6 @@ exports.createProduct = async (req, res) => {
 }
 
 exports.getAllProduct = async (req, res) => {
-//    try {
-//         const getAllProduct = await Product.find({})
-
-//         if (!getAllProduct) {
-//             return res.status(StatusCodes.NOT_FOUND).json({msg : `Oops no products found in our database!`})
-//         }
-
-//         return res.status(StatusCodes.OK).json({total_products : getAllProduct.length, getAllProduct})
-//    } catch (error) {
-//         console.log(error)
-//         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error : error.message})
-//    }
-
     try {
         const {name, field, sort, numerical} = req.query 
 
@@ -65,7 +52,7 @@ exports.getAllProduct = async (req, res) => {
                 } 
             })
         }
-
+        console.log(queryObject)
         let result = Product.find(queryObject)
 
         if (field) {
